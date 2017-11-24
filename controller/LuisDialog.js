@@ -2,6 +2,7 @@ var builder = require('botbuilder');
 var food = require("./FavouriteFoods");
 var restaurant = require('./RestaurantCard');
 var nutrition = require('./NutritionCard');
+var qna = require('./QnAMaker');
 // Some sections have been omitted
 
 exports.startDialog = function (bot) {
@@ -130,6 +131,18 @@ exports.startDialog = function (bot) {
 
     }]).triggerAction({
         matches: 'DeleteFavourite'
+    });
+
+    bot.dialog('QnA', [
+        function (session, args, next) {
+            session.dialogData.args = args || {};
+            builder.Prompts.text(session, "What is your question?");
+        },
+        function (session, results, next) {
+            qna.talkToQnA(session, results.response);
+        }
+    ]).triggerAction({
+        matches: 'QnA'
     });
             
 }
